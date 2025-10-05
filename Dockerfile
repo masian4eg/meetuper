@@ -17,4 +17,4 @@ RUN poetry config virtualenvs.create false \
 COPY . .
 
 # Команда по умолчанию
-CMD ["poetry", "run", "python", "-m", "bot.main"]
+CMD ["poetry", "run", "python", "-m", "main.py"]
