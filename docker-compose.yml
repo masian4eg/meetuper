@@ -13,7 +13,7 @@ services:
       - .:/app
     command: >
       sh -c "alembic upgrade head &&
-             poetry run python -m main.py"
+             poetry run python main.py"
     deploy:
       resources:
         limits:
