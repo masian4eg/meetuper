@@ -28,4 +28,4 @@ async def make_deeplink(kind: str, event_id: int, bot_username: str, session: As
     await session.commit()
     await session.refresh(token)
 
-    return f"https://t.me/{bot_username}?start={quote(token.token)}"
+    return f"https://t.me/{bot_username}_bot?startapp={quote(token.token)}"
