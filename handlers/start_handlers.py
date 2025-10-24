@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 from keyboards import admin_reply_menu
 from utils import verify_payload
-from crud import add_registration, mark_confirmed, create_user_if_not_exists, get_user_role
+from crud import add_registration, mark_confirmed, create_user_if_not_exists, get_user_role, get_user_by_tg
 from models import AsyncSessionLocal
 import logging
 
@@ -36,15 +36,14 @@ class RegSpeakerSG(StatesGroup):
 @router.message(Command("start"))
 async def cmd_start(message: Message, command: CommandObject, state: FSMContext):
     async with AsyncSessionLocal() as session:
-        role = await get_user_role(session, str(message.from_user.id))
-
-    if role in ["event_admin", "super_admin"]:
-        await message.answer(
-            "Добро пожаловать, админ! 📋 Кнопка меню всегда доступна снизу.",
-            reply_markup=admin_reply_menu()
-        )
-    else:
-        await message.answer("Привет! Это бот для мероприятий 👋")
+        if db_user := await get_user_by_tg(session, str(message.from_user.id)):
+            if db_user.role in ["event_admin", "super_admin"]:
+                await message.answer(
+                    "Добро пожаловать, админ! 📋 Кнопка меню всегда доступна снизу.",
+                    reply_markup=admin_reply_menu()
+                )
+        else:
+            await message.answer("Привет! Это бот для мероприятий 👋")
 
     token = command.args
     if not token:
